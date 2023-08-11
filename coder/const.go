@@ -18,3 +18,5 @@ var encodeMap = map[string]string{
 }
 
 var decodeMap map[string]string
+
+const addition = 97

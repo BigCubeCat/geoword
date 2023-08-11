@@ -5,6 +5,7 @@ import (
 )
 
 func EncodeHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	switch r.Method {
 	case "GET":
 		encodeCoordinates(w, r)
@@ -16,6 +17,7 @@ func EncodeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func DecodeHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	switch r.Method {
 	case "GET":
 		decodeCoordinates(w, r)

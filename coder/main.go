@@ -6,7 +6,7 @@ func EncodeCoords(latitude string, longitude string) string {
 	binaryString += encodeMap[","]
 	binaryString += normalizeCoordinate(longitude)
 
-	return binaryString
+	return generateWord(binaryString)
 }
 
 func Prepare() {

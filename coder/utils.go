@@ -17,12 +17,10 @@ func addPostfixZeros(s string, size int) string {
 }
 
 func binToChar(binaryString string) (string, error) {
-	var (
-		i   int64
-		err error
-	)
-	if i, err = strconv.ParseInt("1001", 2, 64); err != nil {
+	if i, err := strconv.ParseInt(binaryString, 2, 64); err != nil {
 		return "0", err
+	} else {
+		index := int(i)
+		return string(ALPHABET[index]), nil
 	}
-	return string(i), nil
 }

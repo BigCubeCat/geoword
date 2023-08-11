@@ -1,12 +1,20 @@
 package coder
 
+import "fmt"
+
 func EncodeCoords(latitude string, longitude string) string {
 	// binary string is "latitude,longitude"
 	binaryString := normalizeCoordinate(latitude)
 	binaryString += encodeMap[","]
 	binaryString += normalizeCoordinate(longitude)
+	fmt.Println(binaryString)
 
-	return generateWord(binaryString)
+	if result, err := generateWord(binaryString); err != nil {
+		fmt.Println(err)
+		return ""
+	} else {
+		return result
+	}
 }
 
 func Prepare() {

@@ -19,4 +19,5 @@ var encodeMap = map[string]string{
 
 var decodeMap map[string]string
 
-const addition = 97
+const ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_."
+const STEP = 6

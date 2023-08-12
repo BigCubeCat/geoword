@@ -1,25 +1,29 @@
 package coder
 
-import "strconv"
+import (
+	"strconv"
+)
 
 func normalizePrefixZeros(s string, size int) string {
+	result := s
 	for i := 0; i < size-len(s); i++ {
-		s = "0" + s
+		result = "0" + result
 	}
-	if len(s) > size {
-		return s[0:size]
+	if len(result) > size {
+		return result[0:size]
 	}
-	return s
+	return result
 }
 
 func normalizePostfixZeros(s string, size int) string {
+	result := s
 	for i := 0; i < size-len(s); i++ {
-		s += "0"
+		result += "0"
 	}
-	if len(s) > size {
-		return s[0:size]
+	if len(result) > size {
+		return result[0:size]
 	}
-	return s
+	return result
 }
 
 func binToChar(binaryString string) (string, error) {

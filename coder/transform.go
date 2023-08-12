@@ -33,11 +33,9 @@ func normalizeCoordinate(coordinate string) string {
 
 func generateWord(binaryString string) (string, error) {
 	word := ""
-	for i := 0; i < len(binaryString)/STEP-1; i++ {
+	for i := 0; i < len(binaryString)/STEP; i++ {
 		binChar := binaryString[i*STEP : i*STEP+STEP]
-		fmt.Println("binChar = ", binChar)
 		letter, err := binToChar(binChar)
-		fmt.Println("letter = ", letter)
 		if err != nil {
 			return "", err
 		}
@@ -46,12 +44,7 @@ func generateWord(binaryString string) (string, error) {
 	return word, nil
 }
 
-func decodeWord(word string) string {
-	return word
-}
-
 func decodeCharByChar(binaryString string) string {
-	fmt.Println(len(binaryString))
 	result := ""
 	for i := 0; i < 3; i++ {
 		result += decodeMap[binaryString[i*CHAR_SIZE:(i+1)*CHAR_SIZE]]

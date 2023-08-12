@@ -20,7 +20,7 @@ func EncodeCoords(latitude string, longitude string) string {
 	}
 }
 
-func DecodeCoords(word string) string {
+func DecodeCoords(word string) (string, string) {
 	binaryString := ""
 	for i := 0; i < len(word); i++ {
 		index := int64(strings.Index(ALPHABET, string(word[i])))

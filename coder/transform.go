@@ -56,7 +56,7 @@ func decodeCharByChar(binaryString string) string {
 	return result
 }
 
-func decodeBinary(binaryString string) string {
+func decodeBinary(binaryString string) (string, string) {
 	splitIndex := 1 + CHAR_SIZE*(3+ACCURACY)
 	fmt.Println("splitIndex = ", splitIndex)
 	fmt.Println(len(binaryString))
@@ -65,5 +65,5 @@ func decodeBinary(binaryString string) string {
 	latitude += decodeCharByChar(binaryString[1:splitIndex])
 	longitude := getSign(binaryString[splitIndex : splitIndex+1])
 	longitude += decodeCharByChar(binaryString[splitIndex+1:])
-	return latitude + "," + longitude
+	return latitude, longitude
 }

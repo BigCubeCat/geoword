@@ -11,7 +11,9 @@ func decodeCoordinates(w http.ResponseWriter, r *http.Request) {
 	resp := make(map[string]string)
 	word := r.URL.Query().Get("word")
 
-	resp["result"] = coder.DecodeCoords(word)
+	latitude, longitude := coder.DecodeCoords(word)
+	resp["latitude"] = latitude
+	resp["longitude"] = longitude
 	jsonResp, err := json.Marshal(resp)
 
 	if err != nil {

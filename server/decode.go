@@ -1,19 +1,24 @@
 package server
 
 import (
-	"fmt"
-	"io"
+	"encoding/json"
+	"log"
 	"net/http"
+	"wordgeocode/coder"
 )
 
 func decodeCoordinates(w http.ResponseWriter, r *http.Request) {
+	resp := make(map[string]string)
 	word := r.URL.Query().Get("word")
-	address := r.URL.Query().Get("address")
-	if len(address) > 0 {
-		// Search address
-		fmt.Println("search...")
+
+	resp["result"] = coder.DecodeCoords(word)
+	jsonResp, err := json.Marshal(resp)
+
+	if err != nil {
+		log.Fatalf("Error happened in JSON marshal. Err: %s", err)
 	}
-	if _, err := io.WriteString(w, word+"\n"); err != nil {
-		fmt.Println(err)
+	if _, err := w.Write(jsonResp); err != nil {
+		log.Println("error: ", err)
+		return
 	}
 }

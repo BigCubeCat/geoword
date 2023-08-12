@@ -7,29 +7,24 @@ import (
 
 func normalizeCoordinate(coordinate string) string {
 	result := ""
-
 	splitString := strings.Split(coordinate, ".")
 	beforeDot := splitString[0]
 	afterDot := splitString[1]
 
 	// Add prefix for check minus
 	if coordinate[0:1] == "-" {
-		result += encodeMap["-"]
+		result += "1"
 		beforeDot = beforeDot[1 : len(beforeDot)-1]
 	} else {
-		result += encodeMap[" "]
+		result += "0"
 	}
 
-	if len(beforeDot) < 3 {
-		beforeDot = addPrefixZeros(beforeDot, 3)
-	}
-	if len(afterDot) < 6 {
-		afterDot = addPostfixZeros(afterDot, 6)
-	}
+	beforeDot = normalizePrefixZeros(beforeDot, 3)
+	afterDot = normalizePostfixZeros(afterDot, ACCURACY)
+	fmt.Println("before after", beforeDot, afterDot)
 	for i := 0; i < len(beforeDot); i++ {
 		result += encodeMap[string(beforeDot[i])]
 	}
-	result += encodeMap["."]
 	for i := 0; i < len(afterDot); i++ {
 		result += encodeMap[string(afterDot[i])]
 	}
@@ -39,9 +34,9 @@ func normalizeCoordinate(coordinate string) string {
 func generateWord(binaryString string) (string, error) {
 	word := ""
 	for i := 0; i < len(binaryString)/STEP-1; i++ {
-		fmt.Println(
-			binaryString[i*STEP : i*STEP+STEP])
-		letter, err := binToChar(binaryString[i*STEP : i*STEP+STEP])
+		binChar := binaryString[i*STEP : i*STEP+STEP]
+		fmt.Println("binChar = ", binChar)
+		letter, err := binToChar(binChar)
 		fmt.Println("letter = ", letter)
 		if err != nil {
 			return "", err
@@ -49,4 +44,33 @@ func generateWord(binaryString string) (string, error) {
 		word += letter
 	}
 	return word, nil
+}
+
+func decodeWord(word string) string {
+	return word
+}
+
+func decodeCharByChar(binaryString string) string {
+	fmt.Println(len(binaryString))
+	result := ""
+	for i := 0; i < 3; i++ {
+		result += decodeMap[binaryString[i*CHAR_SIZE:(i+1)*CHAR_SIZE]]
+	}
+	result += "."
+	for i := 3; i < 3+ACCURACY; i++ {
+		result += decodeMap[binaryString[i*CHAR_SIZE:(i+1)*CHAR_SIZE]]
+	}
+	return result
+}
+
+func decodeBinary(binaryString string) string {
+	splitIndex := 1 + CHAR_SIZE*(3+ACCURACY)
+	fmt.Println("splitIndex = ", splitIndex)
+	fmt.Println(len(binaryString))
+
+	latitude := getSign(binaryString[0:1])
+	latitude += decodeCharByChar(binaryString[1:splitIndex])
+	longitude := getSign(binaryString[splitIndex : splitIndex+1])
+	longitude += decodeCharByChar(binaryString[splitIndex+1:])
+	return latitude + "," + longitude
 }

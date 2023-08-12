@@ -21,3 +21,5 @@ var decodeMap map[string]string
 
 const ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_."
 const STEP = 6
+const CHAR_SIZE = 4
+const ACCURACY = 6

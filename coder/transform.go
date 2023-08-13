@@ -1,33 +1,10 @@
 package coder
 
 import (
-	"strings"
+	"fmt"
+	"log"
+	"strconv"
 )
-
-func normalizeCoordinate(coordinate string) string {
-	result := ""
-	splitString := strings.Split(coordinate, ".")
-	beforeDot := splitString[0]
-	afterDot := splitString[1]
-
-	// Add prefix for check minus
-	if coordinate[0:1] == "-" {
-		result += "1"
-		beforeDot = beforeDot[1 : len(beforeDot)-1]
-	} else {
-		result += "0"
-	}
-
-	beforeDot = normalizePrefixZeros(beforeDot, 3)
-	afterDot = normalizePostfixZeros(afterDot, ACCURACY)
-	for i := 0; i < len(beforeDot); i++ {
-		result += encodeMap[string(beforeDot[i])]
-	}
-	for i := 0; i < len(afterDot); i++ {
-		result += encodeMap[string(afterDot[i])]
-	}
-	return result
-}
 
 func generateWord(binaryString string) (string, error) {
 	word := ""
@@ -55,11 +32,22 @@ func decodeCharByChar(binaryString string) string {
 }
 
 func decodeBinary(binaryString string) (string, string) {
-	splitIndex := 1 + CHAR_SIZE*(3+ACCURACY)
+	// splitIndex := 1 + CHAR_SIZE*(3+ACCURACY)
 
-	latitude := getSign(binaryString[0:1])
-	latitude += decodeCharByChar(binaryString[1:splitIndex])
-	longitude := getSign(binaryString[splitIndex : splitIndex+1])
-	longitude += decodeCharByChar(binaryString[splitIndex+1:])
+	latitude := decodeSign(binaryString[0:1])
+	longitude := decodeSign(binaryString[1:2])
+	longitude += binaryString[2:3]
+	binString := binaryString[5:] // SKIP empty bits
+	fmt.Println(binString, len(binString))
+	number, err := strconv.ParseInt(binString, 2, 64)
+	if err != nil {
+		log.Println(binString, err)
+		return "", ""
+	}
+	lat := strconv.Itoa(int(number / 1000000))
+	latitude += lat[0:2] + "." + lat[2:]
+	lon := strconv.Itoa(int(number % 1000000))
+	longitude += lon[0:2] + "." + lon[2:]
+
 	return latitude, longitude
 }

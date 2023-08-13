@@ -35,9 +35,24 @@ func binToChar(binaryString string) (string, error) {
 	}
 }
 
-func getSign(char string) string {
+func encodeSign(sign string) string {
+	if sign == "-" {
+		return "1"
+	}
+	return "0"
+}
+
+func decodeSign(char string) string {
 	if char == "1" {
 		return "-"
 	}
 	return ""
+}
+
+func addSign(coord string) string {
+	result := encodeSign(coord[0:1])
+	if result == "1" {
+		return result + coord[1:]
+	}
+	return result + coord
 }

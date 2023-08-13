@@ -24,3 +24,4 @@ const SKIP = 2
 const STEP = 6
 const CHAR_SIZE = 4
 const ACCURACY = 4
+const BINARYSIZE = 45

@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"wordgeocode/coder"
@@ -17,7 +16,7 @@ func encodeCoordinates(w http.ResponseWriter, r *http.Request) {
 	if len(latitude) == 0 || len(longitude) == 0 {
 		w.WriteHeader(http.StatusBadRequest)
 		if _, err := w.Write([]byte("Invalid latitude or longitude")); err != nil {
-			fmt.Println(err)
+			log.Println(err)
 		}
 		return
 	}

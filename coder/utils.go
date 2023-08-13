@@ -10,7 +10,7 @@ func normalizePrefixZeros(s string, size int) string {
 		result = "0" + result
 	}
 	if len(result) > size {
-		return result[0:size]
+		return result[len(result)-size:]
 	}
 	return result
 }

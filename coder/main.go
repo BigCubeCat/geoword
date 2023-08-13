@@ -1,7 +1,7 @@
 package coder
 
 import (
-	"fmt"
+	"log"
 	"strconv"
 	"strings"
 )
@@ -11,9 +11,8 @@ func EncodeCoords(latitude string, longitude string) string {
 	binaryString := "00"
 	binaryString += normalizeCoordinate(latitude)
 	binaryString += normalizeCoordinate(longitude)
-	fmt.Println(binaryString, len(binaryString))
 	if result, err := generateWord(binaryString); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return ""
 	} else {
 		return result
@@ -26,10 +25,8 @@ func DecodeCoords(word string) (string, string) {
 		index := int64(strings.Index(ALPHABET, string(word[i])))
 		binaryChar := strconv.FormatInt(index, 2)
 		binaryChar = normalizePrefixZeros(binaryChar, STEP)
-		fmt.Println("binaryChar = ", binaryChar)
 		binaryString += binaryChar
 	}
-	fmt.Println(binaryString, len(binaryString))
 	return decodeBinary(binaryString[SKIP:])
 }
 

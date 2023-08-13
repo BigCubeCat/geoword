@@ -1,7 +1,6 @@
 package coder
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -21,7 +20,6 @@ func normalizeCoordinate(coordinate string) string {
 
 	beforeDot = normalizePrefixZeros(beforeDot, 3)
 	afterDot = normalizePostfixZeros(afterDot, ACCURACY)
-	fmt.Println("before after", beforeDot, afterDot)
 	for i := 0; i < len(beforeDot); i++ {
 		result += encodeMap[string(beforeDot[i])]
 	}
@@ -58,8 +56,6 @@ func decodeCharByChar(binaryString string) string {
 
 func decodeBinary(binaryString string) (string, string) {
 	splitIndex := 1 + CHAR_SIZE*(3+ACCURACY)
-	fmt.Println("splitIndex = ", splitIndex)
-	fmt.Println(len(binaryString))
 
 	latitude := getSign(binaryString[0:1])
 	latitude += decodeCharByChar(binaryString[1:splitIndex])

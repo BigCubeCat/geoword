@@ -1,12 +1,45 @@
 package coder
 
 import (
-	"fmt"
 	"log"
 	"strconv"
+	"strings"
 )
 
-func generateWord(binaryString string) (string, error) {
+func encodeBin(latitude string, longitude string) string {
+	// binary string is "latitude,longitude"
+	lon := strings.Split(longitude, ".")
+	longitudeBeforeDot := lon[0]
+	longitudeAfterDot := lon[1]
+	longitudeBeforeDot = addSign(longitudeBeforeDot)
+
+	lat := strings.Split(latitude, ".")
+	latitudeBeforeDot := lat[0]
+	latitudeAfterDot := lat[1]
+	latitudeBeforeDot = addSign(latitudeBeforeDot)
+
+	binaryString := latitudeBeforeDot[0:1] + longitudeBeforeDot[0:1]
+
+	latitudeBeforeDot = latitudeBeforeDot[1:]
+	if len(longitudeBeforeDot) > 3 {
+		binaryString += "1"
+		longitudeBeforeDot = longitudeBeforeDot[2:]
+	} else {
+		binaryString += "0"
+		longitudeBeforeDot = longitudeBeforeDot[1:]
+	}
+	number := latitudeBeforeDot + normalizePostfixZeros(latitudeAfterDot, ACCURACY)
+	number += longitudeBeforeDot + normalizePostfixZeros(longitudeAfterDot, ACCURACY)
+	intNumber, err := strconv.ParseInt(number, 10, 64)
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+	binaryString += normalizePrefixZeros(strconv.FormatInt(intNumber, 2), BINARYSIZE)
+	return binaryString
+}
+
+func encodeWord(binaryString string) (string, error) {
 	word := ""
 	for i := 0; i < len(binaryString)/STEP; i++ {
 		binChar := binaryString[i*STEP : i*STEP+STEP]
@@ -19,33 +52,33 @@ func generateWord(binaryString string) (string, error) {
 	return word, nil
 }
 
-func decodeCharByChar(binaryString string) string {
-	result := ""
-	for i := 0; i < 3; i++ {
-		result += decodeMap[binaryString[i*CHAR_SIZE:(i+1)*CHAR_SIZE]]
+func decodeWord(word string) string {
+	binaryString := ""
+	for i := 0; i < len(word); i++ {
+		index := int64(strings.Index(ALPHABET, string(word[i])))
+		binaryChar := strconv.FormatInt(index, 2)
+		binaryChar = normalizePrefixZeros(binaryChar, STEP)
+		binaryString += binaryChar
 	}
-	result += "."
-	for i := 3; i < 3+ACCURACY; i++ {
-		result += decodeMap[binaryString[i*CHAR_SIZE:(i+1)*CHAR_SIZE]]
-	}
-	return result
+	return binaryString
 }
 
 func decodeBinary(binaryString string) (string, string) {
-	// splitIndex := 1 + CHAR_SIZE*(3+ACCURACY)
-
 	latitude := decodeSign(binaryString[0:1])
 	longitude := decodeSign(binaryString[1:2])
 	longitude += binaryString[2:3]
+
 	binString := binaryString[5:] // SKIP empty bits
-	fmt.Println(binString, len(binString))
+
 	number, err := strconv.ParseInt(binString, 2, 64)
 	if err != nil {
 		log.Println(binString, err)
 		return "", ""
 	}
+
 	lat := strconv.Itoa(int(number / 1000000))
 	latitude += lat[0:2] + "." + lat[2:]
+
 	lon := strconv.Itoa(int(number % 1000000))
 	longitude += lon[0:2] + "." + lon[2:]
 

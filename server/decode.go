@@ -2,25 +2,26 @@ package server
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"wordgeocode/coder"
 )
 
-func decodeCoordinates(w http.ResponseWriter, r *http.Request) {
-	resp := make(map[string]string)
-	word := r.URL.Query().Get("word")
+func decodeCoordinates(word string) (string, string) {
+	return coder.DecodeCoords(word)
+}
 
-	latitude, longitude := coder.DecodeCoords(word)
-	resp["latitude"] = latitude
-	resp["longitude"] = longitude
-	jsonResp, err := json.Marshal(resp)
+func getWord(r *http.Request) string {
+	return r.URL.Query().Get("word")
+}
 
-	if err != nil {
-		log.Fatalf("Error happened in JSON marshal. Err: %s", err)
+func makeDecodeResponse(w http.ResponseWriter, dto AddressDTO) {
+	w.Header().Set("Content-Type", "application/json")
+	if len(dto.Latitude)*len(dto.Longitude) == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
-	if _, err := w.Write(jsonResp); err != nil {
-		log.Println("error: ", err)
+	if err := json.NewEncoder(w).Encode(dto); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 }

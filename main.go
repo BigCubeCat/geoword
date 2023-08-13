@@ -1,16 +1,12 @@
 package main
 
 import (
-	"log"
-	"net/http"
+	"wordgeocode/db"
 	"wordgeocode/server"
 )
 
 func main() {
-	http.HandleFunc("/encode", server.EncodeHandler)
-	http.HandleFunc("/decode", server.DecodeHandler)
-
-	if err := http.ListenAndServe(":3333", nil); err != nil {
-		log.Fatal(err)
-	}
+	ldb := db.LoadDataBase("data.ldb")
+	serv := server.ApiServer{Port: "3333", Ldb: ldb}
+	serv.Run()
 }

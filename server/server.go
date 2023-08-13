@@ -1,29 +1,54 @@
 package server
 
 import (
+	"log"
 	"net/http"
+	"wordgeocode/db"
 )
 
-func EncodeHandler(w http.ResponseWriter, r *http.Request) {
+type ApiServer struct {
+	Ldb  *db.LevelDbDriver
+	Port string
+}
+
+func (server *ApiServer) EncodeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	switch r.Method {
 	case "GET":
-		encodeCoordinates(w, r)
+		word := encodeCoordinates(r)
+		makeEncodeResponse(w, WordDTO{Word: word})
 	case "POST":
-		encodeCoordinates(w, r)
+		word := encodeCoordinates(r)
+		address := getAddress(r)
+		if err := server.Ldb.Set(word, address); err != nil {
+			log.Println("cant set")
+			log.Println(err)
+		}
+		makeEncodeResponse(w, WordDTO{Word: word})
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
 }
 
-func DecodeHandler(w http.ResponseWriter, r *http.Request) {
+func (server *ApiServer) DecodeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	switch r.Method {
 	case "GET":
-		decodeCoordinates(w, r)
-	case "POST":
-		decodeCoordinates(w, r)
+		dto := AddressDTO{}
+		word := getWord(r)
+		dto.Latitude, dto.Longitude = decodeCoordinates(word)
+		dto.Address = server.Ldb.Get(word)
+		makeDecodeResponse(w, dto)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
+	}
+}
+
+func (server *ApiServer) Run() {
+	http.HandleFunc("/encode", server.EncodeHandler)
+	http.HandleFunc("/decode", server.DecodeHandler)
+
+	if err := http.ListenAndServe(":"+server.Port, nil); err != nil {
+		log.Fatal(err)
 	}
 }

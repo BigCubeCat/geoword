@@ -11,9 +11,9 @@ type LevelDbDriver struct {
 	db   *leveldb.DB
 }
 
-func (lDriver *LevelDbDriver) Init(path string) {
+func (lDriver *LevelDbDriver) Init() {
 	var err error
-	lDriver.db, err = leveldb.OpenFile("path/to/db", nil)
+	lDriver.db, err = leveldb.OpenFile(lDriver.Path, nil)
 	if err != nil {
 		log.Fatal(err)
 	}

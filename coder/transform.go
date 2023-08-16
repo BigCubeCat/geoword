@@ -73,9 +73,11 @@ func decodeBinary(binaryString string) (string, string) {
 	}
 
 	lat := strconv.Itoa(int(number / 1000000))
+	lat = normalizePrefixZeros(lat, 6)
 	latitude += lat[0:2] + "." + lat[2:]
 
 	lon := strconv.Itoa(int(number % 1000000))
+	lon = normalizePrefixZeros(lon, 6)
 	longitude += lon[0:2] + "." + lon[2:]
 
 	return latitude, longitude

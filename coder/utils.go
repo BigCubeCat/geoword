@@ -2,6 +2,7 @@ package coder
 
 import (
 	"strconv"
+	"strings"
 )
 
 func normalizePrefixZeros(s string, size int) string {
@@ -55,4 +56,12 @@ func addSign(coord string) string {
 		return result + coord[1:]
 	}
 	return result + coord
+}
+
+func splitCoordinate(coordinate string) (string, string) {
+	splited := strings.Split(coordinate, ".")
+	coordinateBeforeDot := splited[0]
+	coordinateAfterDot := splited[1]
+	coordinateBeforeDot = addSign(coordinateBeforeDot)
+	return coordinateBeforeDot, coordinateAfterDot
 }

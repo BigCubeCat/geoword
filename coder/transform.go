@@ -7,16 +7,8 @@ import (
 )
 
 func encodeBin(latitude string, longitude string) string {
-	// binary string is "latitude,longitude"
-	lon := strings.Split(longitude, ".")
-	longitudeBeforeDot := lon[0]
-	longitudeAfterDot := lon[1]
-	longitudeBeforeDot = addSign(longitudeBeforeDot)
-
-	lat := strings.Split(latitude, ".")
-	latitudeBeforeDot := lat[0]
-	latitudeAfterDot := lat[1]
-	latitudeBeforeDot = addSign(latitudeBeforeDot)
+	latitudeBeforeDot, latitudeAfterDot := splitCoordinate(latitude)
+	longitudeBeforeDot, longitudeAfterDot := splitCoordinate(longitude)
 
 	binaryString := latitudeBeforeDot[0:1] + longitudeBeforeDot[0:1]
 
@@ -59,6 +51,10 @@ func decodeWord(word string) string {
 		binaryChar := strconv.FormatInt(index, 2)
 		binaryChar = normalizePrefixZeros(binaryChar, STEP)
 		binaryString += binaryChar
+	}
+	if binaryString[3:5] != "00" {
+		// INVALID word
+		log.Println("Invalid word: ", word)
 	}
 	return binaryString
 }
